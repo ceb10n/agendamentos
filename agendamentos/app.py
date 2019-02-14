@@ -4,16 +4,16 @@ import os
 from flask import Flask
 
 from config import init_env, init_logs, init_swagger
+from .database import db
 
 
-def init_app(testing=False):
+def init_app():
     app = Flask(__name__)
     
     init_logs(app)
     init_env(app)
     init_swagger(app)
-    
-    app.config["TESTING"] = testing
+    db.init_app(app)
 
     return app
 
