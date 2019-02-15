@@ -27,6 +27,7 @@ erro.
 # Instalando o Projeto
 
 O projeto foi desenvolvido em Python 3 e Flask, tornando o python uma dependência obrigatória para o projeto.
+
 Para maiores informações sobre como instalar o python em sua máquina, visitar:
 
 * [https://python.org](https://www.python.org/)
@@ -43,4 +44,12 @@ pip install -r requirements.txt -r requirements-dev.txt
 ```
 
 *O virtualenv é opcional, mas desejável*
+
+## Rodando o projeto
+
+A maneira mais simples de iniciar o projeto é rodando o seguinte comando a partir da pasta raíz do projeto:
+
+```console
+python3 agendamentos/app.py
+```
 
