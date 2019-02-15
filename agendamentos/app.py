@@ -4,7 +4,7 @@ import os
 from flask import Flask
 
 from config import init_env, init_logs, init_swagger
-from .database import db
+from database import db
 
 
 def init_app():

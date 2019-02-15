@@ -1,6 +1,5 @@
--r requirements.txt
 black==18.9b0
 flake8==3.5.0
 coverage==4.5.2
 pytest==4.2.1
-
+-r requirements.txt
