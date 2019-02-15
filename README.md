@@ -53,3 +53,12 @@ A maneira mais simples de iniciar o projeto é rodando o seguinte comando a part
 python3 agendamentos/app.py
 ```
 
+## Testando o projeto
+
+```console
+pip install -e .
+pytest --cov=agendamentos tests/
+coverage html
+```
+
+Basta ir para a pasta `htmlcov` na raíz do projeto que estará disponível em html o relatório de cobertura de testes do projeto.
