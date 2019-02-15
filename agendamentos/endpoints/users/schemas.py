@@ -33,11 +33,11 @@ class UsuarioSchema(Schema):
     senha = fields.Str(
         required=True,
         allow_none=False,
-        load_only=True,
         validate=[
             validate.Length(
                 min=6,
                 max=50,
                 error='A senha deve conter entre 6 e 50 caracteres')],
         error_messages={
-            'required': 'A senha é obrigatória'})
+            'required': 'A senha é obrigatória',
+            'null': 'A senha não pode ser nula'})

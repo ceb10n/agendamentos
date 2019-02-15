@@ -8,6 +8,19 @@ from agendamentos.endpoints.users import UsuarioSchema
 
 # Testes do UsuarioSchema
 
+def test_usuario_schema_deve_carregar_corretamente():
+    usuario_schema = UsuarioSchema()
+    usuario = usuario_schema.load({
+            'nome': 'Rafael Marques',
+            'email': 'teste@gmail.com',
+            'senha': 'senha_muito_dificil'
+        })
+
+    assert usuario['nome'] == 'Rafael Marques'
+    assert usuario['email'] == 'teste@gmail.com'
+    assert usuario['senha'] == 'senha_muito_dificil'
+
+
 # Validações do nome
 
 def test_usuario_schema_nome_deve_ser_obrigatorio():
@@ -95,7 +108,7 @@ def test_usuario_schema_email_nao_deve_ser_nulo():
     assert val_err.messages['email'][0] == 'O e-mail não pode ser nulo'
 
 
-def test_usuario_schema_email_nao_deve_ter_menos_de_6_caracteres():
+def test_usuario_schema_email_nao_deve_ter_menos_de_7_caracteres():
     usuario_schema = UsuarioSchema()
 
     with pytest.raises(ValidationError) as excinfo:
@@ -136,3 +149,60 @@ def test_usuario_schema_email_deve_ser_valido():
 
     val_err = excinfo.value
     assert val_err.messages['email'][0] == 'O e-mail informado não é válido'
+
+
+# Validações da senha
+
+def test_usuario_schema_senha_deve_ser_obrigatorio():
+    usuario_schema = UsuarioSchema()
+
+    with pytest.raises(ValidationError) as excinfo:
+        usuario_schema.load({
+            'nome': 'Rafael Marques',
+            'email': 'email@gmail.com'
+        })
+
+    val_err = excinfo.value
+    assert val_err.messages['senha'][0] == 'A senha é obrigatória'
+
+
+def test_usuario_schema_senha_deve_nao_deve_ser_nula():
+    usuario_schema = UsuarioSchema()
+
+    with pytest.raises(ValidationError) as excinfo:
+        usuario_schema.load({
+            'nome': 'Rafael Marques',
+            'email': 'email@gmail.com',
+            'senha': None
+        })
+
+    val_err = excinfo.value
+    assert val_err.messages['senha'][0] == 'A senha não pode ser nula'
+
+
+def test_usuario_schema_senha_deve_nao_deve_ter_menos_de_6_caracteres():
+    usuario_schema = UsuarioSchema()
+
+    with pytest.raises(ValidationError) as excinfo:
+        usuario_schema.load({
+            'nome': 'Rafael Marques',
+            'email': 'email@gmail.com',
+            'senha': 'senha'
+        })
+
+    val_err = excinfo.value
+    assert val_err.messages['senha'][0] == 'A senha deve conter entre 6 e 50 caracteres' # noqa
+
+
+def test_usuario_schema_senha_deve_nao_deve_ter_mais_de_50_caracteres():
+    usuario_schema = UsuarioSchema()
+
+    with pytest.raises(ValidationError) as excinfo:
+        usuario_schema.load({
+            'nome': 'Rafael Marques',
+            'email': 'email@gmail.com',
+            'senha': 's' * 51
+        })
+
+    val_err = excinfo.value
+    assert val_err.messages['senha'][0] == 'A senha deve conter entre 6 e 50 caracteres' # noqa
