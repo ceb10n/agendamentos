@@ -22,8 +22,8 @@ class SalaSchema(Schema):
         validate=[
             validate.Length(
                 min=2,
-                max=100,
-                error='O código deve conter entre 2 e 100 caracteres')],
+                max=15,
+                error='O código deve conter entre 2 e 15 caracteres')],
         error_messages={
             'required': 'O código é obrigatório',
             'null': 'O código não pode ser nulo'})
@@ -44,5 +44,5 @@ class EditarSalaSchema(Schema):
         validate=[
             validate.Length(
                 min=2,
-                max=100,
-                error='O código deve conter entre 2 e 100 caracteres')])
+                max=15,
+                error='O código deve conter entre 2 e 15 caracteres')])
