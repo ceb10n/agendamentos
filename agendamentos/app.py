@@ -7,6 +7,7 @@ from config import init_env, init_logs, init_swagger
 
 from agendamentos.models import db
 
+from agendamentos.endpoints.salas import api_salas_v1
 from agendamentos.endpoints.users import api_usuarios_v1
 
 
@@ -19,6 +20,7 @@ def create_app():
     init_swagger(app)
     db.init_app(app)
     app.register_blueprint(api_usuarios_v1)
+    app.register_blueprint(api_salas_v1)
     return app
 
 

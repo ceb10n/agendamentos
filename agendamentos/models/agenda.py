@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import datetime
 import uuid
 
 from .database import db
@@ -11,3 +12,13 @@ class Agenda(db.Model):
     id = db.Column(db.String(36), default=str(uuid.uuid4()), primary_key=True)
     inicio = db.Column(db.DateTime, nullable=False)
     fim = db.Column(db.DateTime, nullable=False)
+    agendado_em = db.Column(
+        db.DateTime,
+        default=datetime.datetime.utcnow())
+    sala_id = db.Column(
+        db.String(36),
+        db.ForeignKey('salas.id'),
+        nullable=False)
+    sala = db.relationship(
+        'Sala',
+        backref=db.backref('agendamentos', lazy=True))

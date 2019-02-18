@@ -4,6 +4,6 @@ flask==1.0.2
 flask-sqlalchemy==2.3.2
 marshmallow==3.0.0rc4
 passlib==1.7.1
-PyMySQL==0.9.3
+psycopg2==2.7.7
 python-dotenv==0.10.1
 sqlalchemy-utils==0.33.11
