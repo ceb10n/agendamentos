@@ -4,17 +4,21 @@ import os
 from flask import Flask
 
 from config import init_env, init_logs, init_swagger
-from database import db
+
+from agendamentos.models import db
+
+from agendamentos.endpoints.users import api_usuarios_v1
 
 
-def init_app():
+def create_app():
     app = Flask(__name__)
-    
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql+psycopg2://agendamentos:agendamentos@192.168.99.100:5432/agendamentos'
     init_logs(app)
     init_env(app)
     init_swagger(app)
     db.init_app(app)
-
+    app.register_blueprint(api_usuarios_v1)
     return app
 
 
@@ -24,6 +28,22 @@ if __name__ == '__main__':
     # de ambiente APP_PORTA com a porta desejada.
     porta = os.getenv('APP_PORTA', 5000)
 
-    app = init_app()
+    app = create_app()
+
+    @app.route('/resetdb')
+    def resetdb():
+        """Destroys and creates the database + tables."""
+        DB_URL = 'postgresql+psycopg2://agendamentos:agendamentos@192.168.99.100:5432/agendamentos'
+        from sqlalchemy_utils import database_exists, create_database, drop_database
+
+        if database_exists(DB_URL):
+            drop_database(DB_URL)
+
+        if not database_exists(DB_URL):
+            create_database(DB_URL)
+
+        db.create_all()
+
+        return "ok", 200
 
     app.run(debug=True, port=int(porta), host='0.0.0.0')

@@ -1,23 +1,26 @@
 # -*- coding: utf-8 -*-
-from flask import Blueprint, request
+from flask import Blueprint, jsonify, request
 
+from ...models import Usuario, db
 from .schemas import UsuarioSchema
 
-api_usuarios_v1 = Blueprint('api_usuarios_v1', __name__, '/v1')
+api_usuarios_v1 = Blueprint('api_usuarios_v1', __name__, url_prefix='/v1')
 
 
-
-@api_usuarios_v1.route('/users', methods=['POST'])
+@api_usuarios_v1.route('/usuarios')
 def criar_usuario():
-    usuario_schema = UsuarioSchema()    
-    schema = usuario_schema.load(request.get_json()).data
-    return "", 200
-    # user = User(**schema)
-    # user.gen_hash()
+    if request.is_json:
+        usuario_schema = UsuarioSchema()
+        schema = usuario_schema.load(request.get_json())
+        usuario = Usuario(**schema)
+        usuario.criar_senha(schema['senha'])
+        db.session.add(usuario)
+        db.session.commit()
 
-    # db.session.add(user)
-    # db.session.commit()
+        return 'ok', 201
 
-    # return jsonify({
-    #     'message': 'User {} created!'.format(user.email)
-    # }), 201
+    return jsonify({
+        'error': '415 Unsupported Media Type',
+        'message': 'Media Type não suportado',
+        'code': 415
+    }), 415

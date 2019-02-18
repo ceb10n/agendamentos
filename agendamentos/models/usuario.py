@@ -3,7 +3,7 @@ import uuid
 
 from passlib.hash import bcrypt
 
-from ..database import db
+from .database import db
 
 
 class Usuario(db.Model):
@@ -14,7 +14,6 @@ class Usuario(db.Model):
     nome = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(100), unique=True, nullable=False)
     senha = db.Column(db.String(60), nullable=False)
-    agendamentos = db.relationship('Agenda', backref='agendado_por')
 
     def criar_senha(self, senha):
         self.senha = bcrypt.hash(senha)

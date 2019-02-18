@@ -24,7 +24,7 @@ def init_env(app, ambiente=None):
     load_dotenv()
 
     app.logger.info('Verificando ambiente')
-    
+
     if not ambiente:
         ambiente = os.getenv("AMBIENTE")
 
