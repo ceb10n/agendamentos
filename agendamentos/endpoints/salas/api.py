@@ -12,30 +12,30 @@ def criar_sala():
     """Endpoint para criação de novas salas de reunião.
 
     ---
+    tags:
+      - salas
     parameters:
       - name: sala
-        in: path
-        type: string
-        enum: ['all', 'rgb', 'cmyk']
+        in: body
+        type: object
         required: true
-        default: all
+        "schema": {
+          "$ref": "#/definitions/SalaSchema"
+        }
     definitions:
-      Palette:
+      SalaSchema:
         type: object
         properties:
-          palette_name:
-            type: array
-            items:
-              $ref: '#/definitions/Color'
-      Color:
-        type: string
+          nome:
+            type: string
+          codigo:
+            type:
+              string
     responses:
-      200:
-        description: A list of colors (may be filtered by palette)
-        schema:
-          $ref: '#/definitions/Palette'
-        examples:
-          rgb: ['red', 'green', 'blue']
+      201:
+        description: A sala foi criada
+      415:
+        description: Media Type não suportado
     """
     if request.is_json:
         sala_schema = SalaSchema()
