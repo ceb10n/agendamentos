@@ -48,6 +48,11 @@ def bad_request(data={}, mensagem="400 Bad Request"):
     return response(False, data, mensagem, 400)
 
 
+def not_found(mensagem="404 Not Found"):
+    """Retorna um response 404 Not Found."""
+    return response(False, {}, mensagem, 404)
+
+
 def internal_error(data={}, mensagem="500 Internal Server Error"):
     """Retorna um response 500 Internal Server Error"""
     return response(False, data, mensagem, 500)
