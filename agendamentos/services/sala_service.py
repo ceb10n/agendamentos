@@ -3,6 +3,7 @@ from ..models import db, Sala
 
 
 class SalaService:
+    """Serviço para operações e manipulações das salas de reuniões."""
 
     def procurar_por_id(self, id):
         return Sala.query.get(id)
