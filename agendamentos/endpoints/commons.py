@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from flask import jsonify
+from flask import jsonify, make_response
 from marshmallow.exceptions import ValidationError
 
 from .exceptions import BadRequestError
@@ -37,9 +37,10 @@ def ok(data={}, mensagem="200 OK"):
     return response(True, data, mensagem, 200)
 
 
-def created(data={}, mensagem="201 Created"):
+def created(data={}, mensagem="201 Created", location=''):
     """Retorna um response 201 Created."""
-    return response(True, data, mensagem, 201)
+    headers = {'Location': location}
+    return response(True, data, mensagem, 201, headers=headers)
 
 
 def bad_request(data={}, mensagem="400 Bad Request"):
@@ -57,10 +58,18 @@ def unsuported_media_type(data={}, mensagem="415 Unsupported Media Type"):
     return response(False, data, mensagem, 415)
 
 
-def response(sucesso, data, msg, codigo):
+def response(sucesso, data, msg, codigo, headers=None):
     """Retorna um :class:`~flask.Flask.response_class`"""
-    return jsonify({
+    retorno = jsonify({
         'success': sucesso,
         'data': data,
-        'message': msg
-    }), codigo
+        'message': msg})
+
+    if headers:
+        response = make_response(retorno, codigo)
+        for k, v in headers.items():
+            response.headers[k] = v
+
+        return response
+
+    return retorno, codigo

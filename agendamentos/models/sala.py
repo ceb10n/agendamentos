@@ -14,3 +14,9 @@ class Sala(db.Model):
 
     def __repr__(self):
         return '<Sala %r>' % self.nome
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'nome': self.nome,
+            'codigo': self.codigo}

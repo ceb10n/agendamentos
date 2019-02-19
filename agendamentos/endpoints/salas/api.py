@@ -6,6 +6,7 @@ from flask import Blueprint, jsonify, request
 from ..commons import get_json, created, unsuported_media_type
 from ..exceptions import BadRequestError
 from ...models import Sala, db
+from ...services import SalaService
 from .schemas import EditarSalaSchema, SalaSchema
 
 
@@ -57,37 +58,35 @@ def criar_sala():
           'mensagem': 'Não foi possível salvar a sala'
         }), 400
 
-    sala = Sala(**schema)
-    db.session.add(sala)
-    db.session.commit()
+    service = SalaService()
+    sala = service.adicionar(**schema)
 
-    return created(data=json.dumps(sala), mensagem='Sala criada com sucesso')
+    return created(
+      data=sala.to_dict(),
+      mensagem='Sala criada com sucesso',
+      location=f'/v1/salas/{sala.id}')
 
 
 @api_salas_v1.route('/salas/<id>', methods=['PUT'])
 def editar_sala(id):
-    if request.is_json:
-        sala_schema = EditarSalaSchema()
-        schema = sala_schema.load(request.get_json())
+    if not request.is_json:
+        return unsuported_media_type()
 
-        sala = Sala.query.get(id)
+    sala_schema = EditarSalaSchema()
+    schema = sala_schema.load(request.get_json())
 
-        if 'nome' in schema and schema['nome']:
-            sala.nome = schema['nome']
+    sala = Sala.query.get(id)
 
-        if 'codigo' in schema and schema['codigo']:
-            sala.codigo = schema['codigo']
+    if 'nome' in schema and schema['nome']:
+        sala.nome = schema['nome']
 
-        db.session.add(sala)
-        db.session.commit()
+    if 'codigo' in schema and schema['codigo']:
+        sala.codigo = schema['codigo']
 
-        return 'ok', 201
+    db.session.add(sala)
+    db.session.commit()
 
-    return jsonify({
-        'error': '415 Unsupported Media Type',
-        'message': 'Media Type não suportado',
-        'code': 415
-    }), 415
+    return 'ok', 201
 
 
 @api_salas_v1.route('/salas/<id>', methods=['DELETE'])
