@@ -7,6 +7,9 @@ class SalaService:
     def procurar_por_id(self, id):
         return Sala.query.get(id)
 
+    def listar(self):
+        return Sala.query.all()
+
     def adicionar(self, **data):
         sala = Sala(**data)
         db.session.add(sala)

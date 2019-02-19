@@ -11,6 +11,14 @@ from .schemas import EditarSalaSchema, SalaSchema
 api_salas_v1 = Blueprint('api_salas_v1', __name__, url_prefix='/v1')
 
 
+@api_salas_v1.route('/salas', methods=['GET'])
+def listar_salas():
+    service = SalaService()
+    salas = service.listar()
+
+    return ok(data=[sala.to_dict() for sala in salas])
+
+
 @api_salas_v1.route('/salas/<id>', methods=['GET'])
 def pesquisar_sala(id):
     service = SalaService()
