@@ -20,9 +20,7 @@
 
 ### Gestão das salas de reuniões do nosso escritório.
 
-Esse sistema deve receber requisições de agendamento contendo título, sala e período de agendamento e
-deve apenas reservar a sala, se a sala requisitada estiver disponível. Caso contrário, deve apresentar um
-erro.
+Esse sistema deve receber requisições de agendamento contendo título, sala e período de agendamento e deve apenas reservar a sala, se a sala requisitada estiver disponível. Caso contrário, deve apresentar um erro.
 
 # Instalando o Projeto
 

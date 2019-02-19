@@ -249,15 +249,6 @@ def deletar_sala(id):
         type: string
         required: true
         description: Id da Sala de Reunião
-    definitions:
-      EditarSalaSchema:
-        type: object
-        properties:
-          nome:
-            type: string
-          codigo:
-            type:
-              string
     responses:
       200:
         description: A sala foi excluída com sucesso

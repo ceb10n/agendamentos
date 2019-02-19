@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from flask import Blueprint, jsonify, request
 
+from .schemas import EditarAgendaSchema, AgendaSchema
 from ..commons import (
     get_json,
     created,
@@ -9,8 +10,6 @@ from ..commons import (
     ok,
     unsuported_media_type)
 from ..exceptions import BadRequestError
-from ...models import Agenda, db
-from .schemas import EditarAgendaSchema, AgendaSchema
 from ...services import AgendaService
 
 
@@ -81,39 +80,100 @@ def criar_agendamento():
 
 
 @api_agendamento_v1.route('/agendamentos/<id>', methods=['PUT'])
-def editar_sala(id):
-    if request.is_json:
-        agenda_schema = EditarAgendaSchema()
-        schema = agenda_schema.load(request.get_json())
+def editar_agendamento(id):
+    """Edita um agendamento existente.
+    ---
+    tags:
+      - agendamentos
+    parameters:
+      - name: id
+        in: path
+        type: string
+        required: true
+        description: Id do Agendamento
+      - name: agendamento
+        in: body
+        type: object
+        required: true
+        "schema": {
+          "$ref": "#/definitions/EditarAgendaSchema"
+        }
+    definitions:
+      EditarAgendaSchema:
+        type: object
+        properties:
+          inicio:
+            type: string
+            format: date-time
+          fim:
+            type: string
+            format: date-time
+          sala_id:
+            type: string
+    responses:
+      200:
+        description: O agendamento foi editado com sucesso
+      400:
+        description: 400 Bad Request
+      404:
+        description: O agendamento informada não foi encontrado
+      415:
+        description: Media Type não suportado
+      500:
+        description: Um erro não previsto ocorreu
+    """
+    if not request.is_json:
+        return unsuported_media_type()
 
-        agenda = Agenda.query.get(id)
+    try:
+        schema = get_json(EditarAgendaSchema(), request.get_json())
 
-        if 'inicio' in schema and schema['inicio']:
-            agenda.inicio = schema['inicio']
+    except BadRequestError as bad_req_err:
+        return jsonify({
+          'errors': bad_req_err.errors,
+          'status': bad_req_err.code,
+          'mensagem': 'Não foi possível salvar o agendamento'
+        }), 400
 
-        if 'fim' in schema and schema['fim']:
-            agenda.fim = schema['fim']
+    service = AgendaService()
 
-        if 'sala_id' in schema and schema['sala_id']:
-            agenda.sala_id = schema['sala_id']
+    try:
+        if service.editar(schema):
+            return ok(mensagem="Agendamento editado com sucesso")
 
-        db.session.add(agenda)
-        db.session.commit()
+        return not_found(mensagem="Agendamento não encontrado")
 
-        return 'ok', 201
-
-    return jsonify({
-        'error': '415 Unsupported Media Type',
-        'message': 'Media Type não suportado',
-        'code': 415
-    }), 415
+    except Exception:
+        return internal_error()
 
 
 @api_agendamento_v1.route('/agendamentos/<id>', methods=['DELETE'])
 def deletar_agendamento(id):
-    agenda = Agenda.query.get(id)
+    """Remove um agendamento existente.
+    ---
+    tags:
+      - agendamentos
+    parameters:
+      - name: id
+        in: path
+        type: string
+        required: true
+        description: Id do Agendamento
+    responses:
+      200:
+        description: O agendamento foi excluído com sucesso
+      404:
+        description: O agendamento informado não foi encontrado
+      500:
+        description: Um erro não previsto ocorreu
+    """
+    service = AgendaService()
 
-    db.session.delete(agenda)
-    db.session.commit()
+    try:
+        if service.remover(id):
+            return ok(mensagem='Agendamento removido com sucesso')
 
-    return 'ok', 201
+        return not_found(mensagem="Agendamento não encontrado")
+
+    except Exception:
+        return internal_error()
