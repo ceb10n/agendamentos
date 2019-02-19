@@ -1,31 +1,28 @@
 # -*- coding: utf-8 -*-
 from flask import Blueprint, jsonify, request
 
+from ..commons import unsuported_media_type
 from ...models import Agenda, db
 from .schemas import EditarAgendaSchema, AgendaSchema
 
-api_agendamento_v1 = Blueprint('api_agendamento_v1', __name__, url_prefix='/v1')
+api_agendamento_v1 = Blueprint('api_agendamento_v1', __name__, url_prefix='/v1') # noqa
 
 
 @api_agendamento_v1.route('/agendamentos', methods=['POST'])
 def criar_agendamento():
-    if request.is_json:
-        agenda_schema = AgendaSchema()
-        schema = agenda_schema.load(request.get_json())
-        import uuid
-        sala = Agenda(**schema)
-        sala.id = str(uuid.uuid4())
+    if not request.is_json:
+        return unsuported_media_type()
 
-        db.session.add(sala)
-        db.session.commit()
+    agenda_schema = AgendaSchema()
+    schema = agenda_schema.load(request.get_json())
+    import uuid
+    sala = Agenda(**schema)
+    sala.id = str(uuid.uuid4())
 
-        return 'ok', 201
+    db.session.add(sala)
+    db.session.commit()
 
-    return jsonify({
-        'error': '415 Unsupported Media Type',
-        'message': 'Media Type não suportado',
-        'code': 415
-    }), 415
+    return 'ok', 201
 
 
 @api_agendamento_v1.route('/agendamentos/<id>', methods=['PUT'])

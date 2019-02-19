@@ -52,6 +52,11 @@ def internal_error(data={}, mensagem="500 Internal Server Error"):
     return response(False, data, mensagem, 500)
 
 
+def unsuported_media_type(data={}, mensagem="415 Unsupported Media Type"):
+    """Retorna um response 415 Unsupported Media Type"""
+    return response(False, data, mensagem, 415)
+
+
 def response(sucesso, data, msg, codigo):
     """Retorna um :class:`~flask.Flask.response_class`"""
     return jsonify({

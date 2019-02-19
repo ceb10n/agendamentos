@@ -3,7 +3,7 @@ import json
 
 from flask import Blueprint, jsonify, request
 
-from ..commons import get_json, created
+from ..commons import get_json, created, unsuported_media_type
 from ..exceptions import BadRequestError
 from ...models import Sala, db
 from .schemas import EditarSalaSchema, SalaSchema
@@ -44,28 +44,24 @@ def criar_sala():
       415:
         description: Media Type não suportado
     """
-    if request.is_json:
-        try:
-            schema = get_json(SalaSchema(), request.get_json())
+    if not request.is_json:
+        return unsuported_media_type()
 
-        except BadRequestError as bad_req_err:
-            return jsonify({
-              'errors': bad_req_err.errors,
-              'status': bad_req_err.code,
-              'mensagem': 'Não foi possível salvar a sala'
-            }), 400
+    try:
+        schema = get_json(SalaSchema(), request.get_json())
 
-        sala = Sala(**schema)
-        db.session.add(sala)
-        db.session.commit()
+    except BadRequestError as bad_req_err:
+        return jsonify({
+          'errors': bad_req_err.errors,
+          'status': bad_req_err.code,
+          'mensagem': 'Não foi possível salvar a sala'
+        }), 400
 
-        created(data=json.dumps(sala), mensagem='Sala criada com sucesso')
+    sala = Sala(**schema)
+    db.session.add(sala)
+    db.session.commit()
 
-    return jsonify({
-        'error': '415 Unsupported Media Type',
-        'message': 'Media Type não suportado',
-        'code': 415
-    }), 415
+    return created(data=json.dumps(sala), mensagem='Sala criada com sucesso')
 
 
 @api_salas_v1.route('/salas/<id>', methods=['PUT'])
