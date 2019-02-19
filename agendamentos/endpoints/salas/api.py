@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from flask import Blueprint, abort, jsonify, request
+from flask import Blueprint, jsonify, request
 
 from ..commons import get_json, created, ok, not_found, unsuported_media_type
 from ..exceptions import BadRequestError
