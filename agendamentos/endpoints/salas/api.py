@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
-import json
-
 from flask import Blueprint, jsonify, request
 
-from ..commons import get_json, created, unsuported_media_type
+from ..commons import get_json, created, ok, unsuported_media_type
 from ..exceptions import BadRequestError
 from ...models import Sala, db
 from ...services import SalaService
@@ -11,6 +9,13 @@ from .schemas import EditarSalaSchema, SalaSchema
 
 
 api_salas_v1 = Blueprint('api_salas_v1', __name__, url_prefix='/v1')
+
+
+@api_salas_v1.route('/salas/<id>', methods=['GET'])
+def pesquisar_sala(id):
+    sala = Sala.query.get(id)
+
+    return ok(data=sala.to_dict())
 
 
 @api_salas_v1.route('/salas', methods=['POST'])
