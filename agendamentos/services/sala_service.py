@@ -16,3 +16,31 @@ class SalaService:
         db.session.commit()
 
         return sala
+
+    def editar(self, data):
+        sala = Sala.query.get(id)
+
+        if not sala:
+            return False
+
+        if 'nome' in data and data['nome']:
+            sala.nome = data['nome']
+
+        if 'codigo' in data and data['codigo']:
+            sala.codigo = data['codigo']
+
+        db.session.add(sala)
+        db.session.commit()
+
+        return True
+
+    def remover(self, id):
+        sala = Sala.query.get(id)
+
+        if not sala:
+            return False
+
+        db.session.delete(sala)
+        db.session.commit()
+
+        return True
