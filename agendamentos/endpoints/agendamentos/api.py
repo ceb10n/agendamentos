@@ -1,9 +1,18 @@
 # -*- coding: utf-8 -*-
 from flask import Blueprint, jsonify, request
 
-from ..commons import unsuported_media_type
+from ..commons import (
+    get_json,
+    created,
+    internal_error,
+    not_found,
+    ok,
+    unsuported_media_type)
+from ..exceptions import BadRequestError
 from ...models import Agenda, db
 from .schemas import EditarAgendaSchema, AgendaSchema
+from ...services import AgendaService
+
 
 api_agendamento_v1 = Blueprint('api_agendamento_v1', __name__, url_prefix='/v1') # noqa
 
@@ -47,15 +56,28 @@ def criar_agendamento():
     if not request.is_json:
         return unsuported_media_type()
 
-    agenda_schema = AgendaSchema()
-    schema = agenda_schema.load(request.get_json())
+    try:
+        schema = get_json(AgendaSchema(), request.get_json())
 
-    agenda = Agenda(**schema)
+    except BadRequestError as bad_req_err:
+        return jsonify({
+          'errors': bad_req_err.errors,
+          'status': bad_req_err.code,
+          'mensagem': 'Não foi possível salvar o agendamento'
+        }), 400
 
-    db.session.add(agenda)
-    db.session.commit()
+    service = AgendaService()
 
-    return 'ok', 201
+    try:
+        agenda = service.adicionar(**schema)
+
+        return created(
+          data=agenda.to_dict(),
+          mensagem='Agendamento criado com sucesso',
+          location=f'/v1/agendamentos/{agenda.id}')
+
+    except Exception:
+        return internal_error()
 
 
 @api_agendamento_v1.route('/agendamentos/<id>', methods=['PUT'])
