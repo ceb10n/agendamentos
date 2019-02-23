@@ -3,7 +3,7 @@ import os
 
 from flask import Flask
 
-from config import init_env, init_logs, init_swagger
+from config import init_env, init_logs, init_sentry, init_swagger
 
 from agendamentos.models import db
 
@@ -19,6 +19,7 @@ def create_app():
     init_logs(app)
     init_env(app)
     init_swagger(app)
+    init_sentry(app)
     db.init_app(app)
 
     app.register_blueprint(api_agendamento_v1)

@@ -60,3 +60,9 @@ coverage html
 ```
 
 Basta ir para a pasta `htmlcov` na raíz do projeto que estará disponível em html o relatório de cobertura de testes do projeto.
+
+### Captura de erros
+
+A aplicação está utilizando o [Sentry](https://sentry.io).
+
+Para utilizar a integração, é necessário configurar a variável de ambiente `SENTRY_DNS` com o valor do dns disponibilizado pelo Sentry.

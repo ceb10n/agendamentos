@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 import logging
 import os
+import sentry_sdk
 
 from dotenv import load_dotenv
 from flasgger import Swagger
+from sentry_sdk.integrations.flask import FlaskIntegration
 
 
 def init_logs(app):
@@ -33,6 +35,21 @@ def init_env(app, ambiente=None):
     app.config['ENV'] = ambiente
 
     app.logger.info('Ambiente %s definido' % (app.config['ENV']))
+
+
+def init_sentry(app):
+    app.logger.info('Iniciando integração do Flask com o Sentry')
+
+    sentry_dns = os.getenv('SENTRY_DNS', default=None)
+
+    if sentry_dns:
+        sentry_sdk.init(
+            dsn=sentry_dns,
+            integrations=[FlaskIntegration()]
+        )
+    else:
+        app.logger.info('Integração com Sentry Falhou. É necessário definir a variável de ambiente SENTRY_DNS') # noqa
+    
 
 
 def init_swagger(app):
