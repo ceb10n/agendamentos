@@ -26,29 +26,14 @@ api_agendamento_v1 = Blueprint('api_agendamento_v1', __name__, url_prefix='/v1')
 
 @api_agendamento_v1.route('/agendamentos', methods=['GET'])
 def listar_salas():
-    """Retorna todas as salas de reunião.
+    """Realiza uma busca por agendamentos.
     ---
     tags:
-      - salas
-    definitions:
-      Sala:
-        type: object
-        properties:
-          nome:
-            type: string
-          codigo:
-            type:
-              string
-          id:
-            type:
-              string
+      - agendamentos
+    
     responses:
       200:
-        description: A sala foi criada
-        schema:
-          type: array
-          items:
-            $ref: '#/definitions/Sala'
+        description: A consulta foi realizada com sucesso
       500:
         description: Um erro não previsto ocorreu
     """

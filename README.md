@@ -110,7 +110,18 @@ pytest --cov=agendamentos tests/
 coverage html
 ```
 
+![execução dos testes](imgs/execucao_testes.png)
+
 Basta ir para a pasta `htmlcov` na raíz do projeto que estará disponível em html o relatório de cobertura de testes do projeto.
+
+### Página inicial da cobertura de testes
+
+![coverage](imgs/coverage.png)
+
+
+### Cobertura de testes do serviço de salas
+
+![coverage sala service](imgs/coverage-sala-service.png)
 
 
 ### Rastreamento de erros
@@ -120,3 +131,99 @@ A aplicação está utilizando o [Sentry](https://sentry.io).
 ![sentry.io](imgs/sentry.png)
 
 Para utilizar a integração, é necessário configurar a variável de ambiente `SENTRY_DNS` com o valor do dns disponibilizado pelo Sentry.
+
+## Endpoints
+
+### agendamentos
+
+```
+GET
+/v1/agendamentos
+```
+
+#### Sem filtros
+
+![listar agendamentos](imgs/listar_agendamentos.png)
+
+#### Filtro por data
+
+![listar agendamentos](imgs/agendamento_filtro_por_data.png)
+
+#### Filtro por sala
+
+![listar agendamentos](imgs/agendamento_filtro_por_sala.png)
+
+#### Filtro por sala e data
+
+![listar agendamentos](imgs/agendamento_filtro_por_sala_e_data.png)
+
+```
+POST
+/v1/agendamentos
+```
+
+#### Agendamento criado com sucesso
+
+![agendamento sucesso](imgs/agendamento_sucesso.png)
+
+#### Agendamento já existente
+
+![agendamento já existente](imgs/sala_ja_agendada.png)
+
+```
+DELETE
+/v1/agendamentos/{id}
+```
+
+![agendamento removido](imgs/agendamento_removido.png)
+
+```
+PUT
+/v1/agendamentos/{id}
+```
+
+![agendamento editado](imgs/agendamento_editado.png)
+
+### salas
+
+```
+GET
+/v1/salas
+```
+
+![listar salas](imgs/salas_listar.png)
+
+```
+POST
+/v1/salas
+```
+
+![adicionar salas](imgs/salas_adicionar.png)
+
+```
+DELETE
+/v1/salas/{id}
+```
+
+![remover salas](imgs/salas_remover.png)
+
+```
+GET
+/v1/salas/{id}
+```
+
+![procurar salas](imgs/salas_por_id.png)
+
+```
+PUT
+/v1/salas/{id}
+```
+
+![editar salas](imgs/salas_editar.png)
+
+## TODO
+
+* Cadastro de usuários para utilizar a api
+* Autenticação da api
+* Maior cobertura de testes
+* Gerar documentação automática com o sphinx

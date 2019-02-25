@@ -16,6 +16,7 @@ class AgendaService:
         self.logger = get_logger()
 
     def procurar_por_id(self, id):
+        self.logger.info('AgendaService: procurando agendamento com o id {id}')
         return Agenda.query.get(id)
 
     def listar(self, filtros):
@@ -56,6 +57,7 @@ class AgendaService:
             data['sala_id'])
 
         if ja_existe_agendamento:
+            self.logger.info('AgendaService: Um agendamento foi cancelado por tentar marcar no mesmo horário que outro agendamento existente.') # noqa
             raise AgendamentoExistenteError('A sala já está reservada neste horário') # noqa
 
         agendamento = Agenda(**data)
@@ -67,6 +69,8 @@ class AgendaService:
         return agendamento
 
     def editar(self, id, data):
+        self.logger.info(f'AgendaService: O agendamento com id {id} está sendo editado') # noqa
+
         agendamento = Agenda.query.get(id)
 
         if not agendamento:
@@ -87,9 +91,12 @@ class AgendaService:
         return True
 
     def remover(self, id):
+        self.logger.info(f'AgendaService: O agendamento com id {id} será removido') # noqa
+
         agendamento = Agenda.query.get(id)
 
         if not agendamento:
+            self.logger.info(f'AgendaService: O agendamento com id {id} não foi removido pois era inexistente') # noqa
             return False
 
         db.session.delete(agendamento)
