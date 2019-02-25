@@ -67,6 +67,12 @@ Basta definir a variável de ambiente:
 
 Porém, o filtro de agendamentos por data não está compatível com o SQLite, impossibilitando realizar tal query.
 
+### Acessando o banco de dados
+
+Para acessar o banco de dados, eu utilizo o DBeaver, por ser gratuíto e muito bom para este caso.
+
+![banco dbeaver](imgs/banco.png)
+
 ## Rodando o projeto
 
 A maneira mais simples de iniciar o projeto é rodando o seguinte comando a partir da pasta raíz do projeto:

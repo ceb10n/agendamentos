@@ -47,7 +47,8 @@ if __name__ == '__main__':
     @app.route('/resetdb')
     def resetdb():
         """Destroys and creates the database + tables."""
-        DB_URL = 'postgresql+psycopg2://agendamentos:agendamentos@192.168.99.100:5432/agendamentos'
+        DB_URL = os.getenv('SQLALCHEMY_DATABASE_URI', default='sqlite://')
+
         from sqlalchemy_utils import (
             database_exists,
             create_database,
