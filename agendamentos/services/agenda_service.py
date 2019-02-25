@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import uuid
 
-from sqlalchemy import func
+from sqlalchemy import Date, cast
 
 from ..models import db, Agenda, Sala
 
@@ -27,13 +27,15 @@ class AgendaService:
                 self.logger.info(f'AgendaService: filtrando agendamentos pela data: {filtros["data"]}') # noqa
 
                 query = query.filter(
-                    func.date(Agenda.inicio) == func.date(filtros['data']))
+                    cast(Agenda.inicio, Date) == filtros['data'])
 
             if 'sala_id' in filtros and filtros['sala_id']:
                 self.logger.info(f'AgendaService: filtrando agendamentos pela sala: {filtros["sala_id"]}') # noqa
+
                 query = query.filter(Agenda.sala_id == filtros['sala_id'])
 
             return query.all()
+
         except Exception as ex:
             self.logger.error(f'AgendaService: erro ao realizar o filtro dos agendamentos') # noqa
             self.logger.error(str(ex))

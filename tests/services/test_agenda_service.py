@@ -126,7 +126,7 @@ def test_deve_editar_o_agendamento(agendamentos_app):
         'sala_id': nova_sala.id}) is True
 
 
-def test_editar_deve_retornar_false_para_agenda_nao_existente(agendamentos_app):
+def test_editar_deve_retornar_false_para_agenda_nao_existente(agendamentos_app): # noqa
     service = AgendaService()
 
     assert not service.editar(str(uuid.uuid4()), {})
@@ -160,3 +160,35 @@ def test_remover_sala_inexistente_deve_retornar_false(agendamentos_app):
     service = AgendaService()
 
     assert not service.remover(str(uuid.uuid4()))
+
+
+def test_deve_filtrar_os_agendamentos_corretamente(agendamentos_app):
+    service = AgendaService()
+    sala = Sala.query.first()
+    agora = datetime.datetime.utcnow()
+
+    service.adicionar(
+        inicio=agora,
+        fim=agora,
+        sala_id=sala.id)
+
+    agendas = service.listar({'sala_id': sala.id})
+
+    assert len(agendas) > 0
+
+
+def test_deve_lancar_erro_ao_passar_id_da_sala_invalido_ao_filtrar_agendamentos(agendamentos_app): # noqa
+    service = AgendaService()
+    sala = Sala.query.first()
+    agora = datetime.datetime.utcnow()
+
+    service.adicionar(
+        inicio=agora,
+        fim=agora,
+        sala_id=sala.id)
+
+    with pytest.raises(Exception) as excinfo:
+        service.listar({'sala_id': uuid.uuid4()})
+
+    val_err = excinfo.value
+    assert str(val_err) == 'AgendaService: erro ao realizar o filtro dos agendamentos' # noqa

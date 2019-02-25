@@ -3,15 +3,13 @@ import os
 
 from flask import Flask
 
-from .config import (
+from agendamentos.config import (
     init_db,
     init_env,
     init_logs,
     init_sentry,
     init_swagger)
-
 from agendamentos.models import db
-
 from agendamentos.endpoints.agendamentos import api_agendamento_v1
 from agendamentos.endpoints.salas import api_salas_v1
 from agendamentos.endpoints.users import api_usuarios_v1
