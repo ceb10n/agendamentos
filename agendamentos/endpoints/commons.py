@@ -2,7 +2,28 @@
 from flask import jsonify, make_response
 from marshmallow.exceptions import ValidationError
 
+from agendamentos.logs import get_logger
+
 from .exceptions import BadRequestError
+
+
+def get_args(schema, args):
+    try:
+        query_string = {}
+
+        for k, v in args.items():
+            print(f'{k}: {str(v)}')
+            query_string[k] = str(v)
+
+        schema = schema.load(args)
+
+        return schema
+
+    except ValidationError as val_err:
+        req_err = BadRequestError(status=400)
+        req_err.set_errors(val_err.messages)
+
+        raise req_err
 
 
 def get_json(schema, json):
@@ -55,6 +76,10 @@ def not_found(mensagem="404 Not Found"):
 
 def internal_error(data={}, mensagem="500 Internal Server Error"):
     """Retorna um response 500 Internal Server Error"""
+    logger = get_logger()
+    logger.error('Ocorreu um erro não previsto')
+    import traceback
+    logger.error(traceback.format_exc())
     return response(False, data, mensagem, 500)
 
 

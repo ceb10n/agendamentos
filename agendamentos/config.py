@@ -8,6 +8,24 @@ from flasgger import Swagger
 from sentry_sdk.integrations.flask import FlaskIntegration
 
 
+def init_db(app):
+    app.logger.info('Inicializando banco de dados')
+
+    if app.config['TESTING'] is True:
+        app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+        app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite://'
+
+    else:
+        db_uri = os.getenv('SQLALCHEMY_DATABASE_URI', default='sqlite://')
+        track_modifications = os.getenv(
+            'SQLALCHEMY_TRACK_MODIFICATIONS',
+            default=False)
+
+        app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = \
+            bool(track_modifications)
+        app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
+
+
 def init_logs(app):
     formatter = logging.Formatter(
         "[%(asctime)s] %(levelname)s - %(message)s")
@@ -49,7 +67,6 @@ def init_sentry(app):
         )
     else:
         app.logger.info('Integração com Sentry Falhou. É necessário definir a variável de ambiente SENTRY_DNS') # noqa
-    
 
 
 def init_swagger(app):

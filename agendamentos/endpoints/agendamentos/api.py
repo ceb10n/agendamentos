@@ -1,8 +1,12 @@
 # -*- coding: utf-8 -*-
 from flask import Blueprint, jsonify, request
 
-from .schemas import EditarAgendaSchema, AgendaSchema
+from .schemas import (
+  AgendaSchema,
+  EditarAgendaSchema,
+  FiltrarAgendaSchema)
 from ..commons import (
+    get_args,
     get_json,
     created,
     internal_error,
@@ -14,6 +18,55 @@ from ...services import AgendaService
 
 
 api_agendamento_v1 = Blueprint('api_agendamento_v1', __name__, url_prefix='/v1') # noqa
+
+
+@api_agendamento_v1.route('/agendamentos', methods=['GET'])
+def listar_salas():
+    """Retorna todas as salas de reunião.
+    ---
+    tags:
+      - salas
+    definitions:
+      Sala:
+        type: object
+        properties:
+          nome:
+            type: string
+          codigo:
+            type:
+              string
+          id:
+            type:
+              string
+    responses:
+      200:
+        description: A sala foi criada
+        schema:
+          type: array
+          items:
+            $ref: '#/definitions/Sala'
+      500:
+        description: Um erro não previsto ocorreu
+    """
+    service = AgendaService()
+
+    try:
+        filtro = get_args(FiltrarAgendaSchema(), request.args)
+
+    except BadRequestError as bad_req_err:
+        return jsonify({
+          'errors': bad_req_err.errors,
+          'status': bad_req_err.code,
+          'mensagem': 'Não foi possível salvar o agendamento'
+        }), 400
+
+    try:
+        salas = service.listar(filtro)
+
+        return ok(data=[sala.to_dict() for sala in salas])
+
+    except Exception:
+        return internal_error()
 
 
 @api_agendamento_v1.route('/agendamentos', methods=['POST'])
@@ -138,7 +191,7 @@ def editar_agendamento(id):
     service = AgendaService()
 
     try:
-        if service.editar(schema):
+        if service.editar(id, schema):
             return ok(mensagem="Agendamento editado com sucesso")
 
         return not_found(mensagem="Agendamento não encontrado")

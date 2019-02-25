@@ -42,3 +42,10 @@ class EditarAgendaSchema(Schema):
                 min=36,
                 max=36,
                 error='O id deve ser um uuid de 36 caracteres')])
+
+
+class FiltrarAgendaSchema(Schema):
+
+    data = fields.Date(required=False, allow_none=True, allow_empty=True)
+    sala_id = fields.Str(
+        required=False)

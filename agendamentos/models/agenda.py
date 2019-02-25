@@ -22,3 +22,12 @@ class Agenda(db.Model):
     sala = db.relationship(
         'Sala',
         backref=db.backref('agendamentos', lazy=True))
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'inicio': self.inicio.strftime("%Y-%m-%dT%H:%M:%S+00:00"),
+            'fim': self.fim.strftime("%Y-%m-%dT%H:%M:%S+00:00"),
+            'agendado_em': self.agendado_em.strftime("%Y-%m-%dT%H:%M:%S+00:00"),
+            'sala_id': self.sala_id,
+            'sala': self.sala.to_dict()}

@@ -228,7 +228,7 @@ def editar_sala(id):
     service = SalaService()
 
     try:
-        if service.editar(schema):
+        if service.editar(id, schema):
             return ok(mensagem="Sala editada com sucesso")
 
         return not_found(mensagem="Sala não encontrada")

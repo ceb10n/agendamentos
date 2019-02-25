@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+import uuid
+
+
 from ..models import db, Sala
 
 
@@ -18,7 +21,7 @@ class SalaService:
 
         return sala
 
-    def editar(self, data):
+    def editar(self, id, data):
         sala = Sala.query.get(id)
 
         if not sala:

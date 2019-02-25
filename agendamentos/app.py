@@ -3,7 +3,12 @@ import os
 
 from flask import Flask
 
-from config import init_env, init_logs, init_sentry, init_swagger
+from .config import (
+    init_db,
+    init_env,
+    init_logs,
+    init_sentry,
+    init_swagger)
 
 from agendamentos.models import db
 
@@ -12,19 +17,24 @@ from agendamentos.endpoints.salas import api_salas_v1
 from agendamentos.endpoints.users import api_usuarios_v1
 
 
-def create_app():
+def create_app(testing=False):
     app = Flask(__name__)
-    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql+psycopg2://agendamentos:agendamentos@192.168.99.100:5432/agendamentos'
-    init_logs(app)
-    init_env(app)
-    init_swagger(app)
-    init_sentry(app)
+
+    if testing:
+        app.config['TESTING'] = True
+    else:
+        init_env(app)
+        init_logs(app)
+        init_sentry(app)
+        init_swagger(app)
+
+    init_db(app)
     db.init_app(app)
 
     app.register_blueprint(api_agendamento_v1)
     app.register_blueprint(api_usuarios_v1)
     app.register_blueprint(api_salas_v1)
+
     return app
 
 
