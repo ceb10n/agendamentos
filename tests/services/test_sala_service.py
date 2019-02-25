@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-import datetime
 import pytest
 import uuid
 
@@ -25,14 +24,11 @@ def agendamentos_app():
 
 def test_adicionar_uma_sala_com_sucesso(agendamentos_app):
     service = SalaService()
-    id = str(uuid.uuid4())
 
     sala = service.adicionar(
-        id=id,
         nome='Sala de Teste',
         codigo='SALA_TESTE')
 
-    assert sala.id == id
     assert sala.nome == 'Sala de Teste'
     assert sala.codigo == 'SALA_TESTE'
 
@@ -49,28 +45,24 @@ def test_listar_salas(agendamentos_app):
 
 def test_procurar_sala_por_id(agendamentos_app):
     service = SalaService()
-    id = str(uuid.uuid4())
-    service.adicionar(id=id, nome='Sala de Teste', codigo='SALA_TESTE')
+    sala = service.adicionar(nome='Sala de Teste', codigo='SALA_TESTE')
 
-    sala = service.procurar_por_id(id)
+    sala = service.procurar_por_id(sala.id)
 
-    assert sala.id == id
     assert sala.nome == 'Sala de Teste'
     assert sala.codigo == 'SALA_TESTE'
 
 
 def test_editar_sala(agendamentos_app):
     service = SalaService()
-    id = str(uuid.uuid4())
-    service.adicionar(id=id, nome='Sala de Teste', codigo='SALA_TESTE')
+    sala = service.adicionar(nome='Sala de Teste', codigo='SALA_TESTE')
 
-    assert service.editar(id, {
+    assert service.editar(sala.id, {
         'nome': 'Nome Editado',
         'codigo': 'Código Editado'}) is True
 
-    sala = service.procurar_por_id(id)
+    sala = service.procurar_por_id(sala.id)
 
-    assert sala.id == id
     assert sala.nome == 'Nome Editado'
     assert sala.codigo == 'Código Editado'
 
@@ -86,14 +78,12 @@ def test_editar_sala_deve_retornar_false_se_a_sala_nao_existir(agendamentos_app)
 
 def test_remover_uma_sala_com_sucesso(agendamentos_app):
     service = SalaService()
-    id = str(uuid.uuid4())
 
-    service.adicionar(
-        id=id,
+    sala = service.adicionar(
         nome='Sala de Teste',
         codigo='SALA_TESTE')
 
-    assert service.remover(id) is True
+    assert service.remover(sala.id) is True
 
 
 def test_remover_uma_sala_que_nao_existe_deve_retornar_falso(agendamentos_app):

@@ -53,26 +53,6 @@ def test_adicionar_um_agendamento_com_sucesso(agendamentos_app):
     assert agenda.sala_id == sala.id
 
 
-def test_nao_deve_permitir_agendamento_na_mesma_sala_no_mesmo_horario(agendamentos_app): # noqa
-    service = AgendaService()
-    sala = Sala.query.first()
-    agora = datetime.datetime.utcnow()
-
-    service.adicionar(
-        inicio=agora,
-        fim=agora,
-        sala_id=sala.id)
-
-    with pytest.raises(Exception) as excinfo:
-        service.adicionar(
-            inicio=agora - datetime.timedelta(minutes=5),
-            fim=agora + datetime.timedelta(minutes=5),
-            sala_id=sala.id)
-
-    val_err = excinfo.value
-    assert str(val_err) == 'A sala já está reservada neste horário'
-
-
 def test_a_sala_deve_existir(agendamentos_app):
     service = AgendaService()
     agora = datetime.datetime.utcnow()

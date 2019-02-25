@@ -104,6 +104,8 @@ def criar_agendamento():
         description: O agendamento foi criado
       400:
         description: 400 Bad Request
+      409:
+        description: Caso a sala já esteja agendada
       415:
         description: Media Type não suportado
       500:

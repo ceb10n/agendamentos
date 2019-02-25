@@ -16,6 +16,8 @@ class SalaService:
 
     def adicionar(self, **data):
         sala = Sala(**data)
+        sala.id = str(uuid.uuid4())
+
         db.session.add(sala)
         db.session.commit()
 

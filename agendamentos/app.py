@@ -12,7 +12,6 @@ from agendamentos.config import (
 from agendamentos.models import db
 from agendamentos.endpoints.agendamentos import api_agendamento_v1
 from agendamentos.endpoints.salas import api_salas_v1
-from agendamentos.endpoints.users import api_usuarios_v1
 
 
 def create_app(testing=False):
@@ -30,7 +29,6 @@ def create_app(testing=False):
     db.init_app(app)
 
     app.register_blueprint(api_agendamento_v1)
-    app.register_blueprint(api_usuarios_v1)
     app.register_blueprint(api_salas_v1)
 
     return app
