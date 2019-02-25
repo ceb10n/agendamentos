@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 import uuid
 
-from sqlalchemy import Date, cast
+from sqlalchemy import Date, DateTime, cast, and_, or_
+
+from agendamentos.exceptions import AgendamentoExistenteError
+from agendamentos.logs import get_logger
 
 from ..models import db, Agenda, Sala
-
-from agendamentos.logs import get_logger
 
 
 class AgendaService:
@@ -55,7 +56,7 @@ class AgendaService:
             data['sala_id'])
 
         if ja_existe_agendamento:
-            raise Exception('A sala já está reservada neste horário')
+            raise AgendamentoExistenteError('A sala já está reservada neste horário') # noqa
 
         agendamento = Agenda(**data)
         agendamento.id = str(uuid.uuid4())
@@ -97,9 +98,15 @@ class AgendaService:
         return True
 
     def existe_agendamento(self, inicio, fim, sala_id):
-        return any(Agenda.query.filter(
-            Agenda.sala_id == sala_id,
-            Agenda.inicio >= inicio,
-            Agenda.fim <= inicio,
-            Agenda.inicio >= fim,
-            Agenda.fim >= fim))
+        query = Agenda.query.filter(Agenda.sala_id == sala_id)
+
+        query = query.filter(
+            or_(
+                and_(
+                    (cast(Agenda.inicio, DateTime) >= inicio),
+                    (cast(Agenda.inicio, DateTime) <= fim)),
+                and_(
+                    (cast(Agenda.fim, DateTime) <= inicio),
+                    (cast(Agenda.fim, DateTime) >= fim))))
+
+        return len(query.all()) > 0

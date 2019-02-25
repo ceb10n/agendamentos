@@ -1,20 +1,24 @@
 # -*- coding: utf-8 -*-
 from flask import Blueprint, jsonify, request
 
+from agendamentos.exceptions import AgendamentoExistenteError
+
 from .schemas import (
   AgendaSchema,
   EditarAgendaSchema,
   FiltrarAgendaSchema)
 from ..commons import (
+    conflict,
+    created,
     get_args,
     get_json,
-    created,
     internal_error,
     not_found,
     ok,
     unsuported_media_type)
 from ..exceptions import BadRequestError
 from ...services import AgendaService
+
 
 
 api_agendamento_v1 = Blueprint('api_agendamento_v1', __name__, url_prefix='/v1') # noqa
@@ -127,6 +131,9 @@ def criar_agendamento():
           data=agenda.to_dict(),
           mensagem='Agendamento criado com sucesso',
           location=f'/v1/agendamentos/{agenda.id}')
+
+    except AgendamentoExistenteError as agendamento_err:
+        return conflict(mensagem=str(agendamento_err))
 
     except Exception:
         return internal_error()
