@@ -16,7 +16,7 @@ class AgendaService:
         self.logger = get_logger()
 
     def procurar_por_id(self, id):
-        self.logger.info('AgendaService: procurando agendamento com o id {id}')
+        self.logger.info('AgendaService: procurando agendamento com o id {id}.') # noqa
         return Agenda.query.get(id)
 
     def listar(self, filtros):

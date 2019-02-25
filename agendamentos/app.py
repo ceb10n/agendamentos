@@ -42,11 +42,16 @@ if __name__ == '__main__':
 
     app = create_app()
 
+    # rota adicionada apenas para facilitar a criação inicial do banco de
+    # dados, ou resetar o banco para fins de teste durante o desenvolvimento
     @app.route('/resetdb')
     def resetdb():
         """Destroys and creates the database + tables."""
         DB_URL = 'postgresql+psycopg2://agendamentos:agendamentos@192.168.99.100:5432/agendamentos'
-        from sqlalchemy_utils import database_exists, create_database, drop_database
+        from sqlalchemy_utils import (
+            database_exists,
+            create_database,
+            drop_database)
 
         if database_exists(DB_URL):
             drop_database(DB_URL)

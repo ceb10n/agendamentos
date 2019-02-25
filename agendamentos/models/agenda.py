@@ -10,6 +10,7 @@ class Agenda(db.Model):
     __tablename__ = 'agendamentos'
 
     id = db.Column(db.String(36), default=str(uuid.uuid4()), primary_key=True)
+    titulo = db.Column(db.String(100), nullable=True)
     inicio = db.Column(db.DateTime, nullable=False)
     fim = db.Column(db.DateTime, nullable=False)
     agendado_em = db.Column(
