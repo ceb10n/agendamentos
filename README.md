@@ -42,6 +42,7 @@ pip install -r requirements.txt -r requirements-dev.txt
 ```
 
 *O virtualenv é opcional, mas desejável*
+
 *O docker machine também é opcional, mas pode ser utilizado para levantar o banco de dados da aplicação*
 
 ## Banco de Dados
@@ -93,6 +94,14 @@ Para obter o dns do Sentry, basta criar uma conta gratuitamente em [https://sent
 O endereço do banco de dados é relativo ao Postgres que é criado com o docker-compose.yml. Para utilizar algum outro banco, com endeço diferente, etc. Basta atualizar as informações da string de conexão.
 É importante lembrar que o ip da sua docker machine pode ser diferente.
 
+## Informações sobre os endpoints
+
+Está disponível através da url `/apidocs` a documentação dos endpoints.
+
+É utilizado o pacote `flasgger` para gerar toda a documentação com o Swagger.
+
+![swagger agendamentos](imgs/swagger.png)
+
 ## Testando o projeto
 
 ```console
@@ -102,6 +111,7 @@ coverage html
 ```
 
 Basta ir para a pasta `htmlcov` na raíz do projeto que estará disponível em html o relatório de cobertura de testes do projeto.
+
 
 ### Rastreamento de erros
 
