@@ -117,4 +117,6 @@ Basta ir para a pasta `htmlcov` na raíz do projeto que estará disponível em h
 
 A aplicação está utilizando o [Sentry](https://sentry.io).
 
+![sentry.io](imgs/sentry.png)
+
 Para utilizar a integração, é necessário configurar a variável de ambiente `SENTRY_DNS` com o valor do dns disponibilizado pelo Sentry.
